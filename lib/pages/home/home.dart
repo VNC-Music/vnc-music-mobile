@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vnc_music/components/navigation.dart';
+import 'package:vnc_music/constants.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -19,7 +20,6 @@ class _Home extends State<Home> {
         child: Column(
           children: [
             Container(
-              color: const Color.fromARGB(242, 244, 224, 248),
               height: size.height,
               width: size.width,
               padding: const EdgeInsets.all(5),
@@ -29,10 +29,7 @@ class _Home extends State<Home> {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
-                      color: Colors.white,
-                      border: Border.all(
-                        color: const Color.fromARGB(255, 99, 100, 99),
-                      ),
+                      border: Border.all(),
                     ),
                     child: SingleChildScrollView(
                       child: Column(
@@ -51,11 +48,7 @@ class _Home extends State<Home> {
       appBar: AppBar(
         title: const Text(
           'Home',
-          style: TextStyle(
-            fontSize: 14,
-          ),
         ),
-        backgroundColor: Colors.purple,
       ),
     );
   }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:vnc_music/pages/conjuntos/conjunto_list.dart';
 import 'package:vnc_music/pages/historico/historico.dart';
 
 class Routes {
   static Map<String, Widget Function(BuildContext)> list =
       <String, WidgetBuilder>{
     '/historico': (_) => const Historico(),
+    '/conjuntos': (_) => const ConjuntoList(),
     // '/minha_conta': (_) => const MinhaConta(),
     // '/configuracoes': (_) => const Configuracoes(),
     // '/sobre': (_) => const Sobre(),
