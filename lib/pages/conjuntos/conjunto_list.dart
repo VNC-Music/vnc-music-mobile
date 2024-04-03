@@ -1,7 +1,12 @@
+// ignore_for_file: slash_for_doc_comments
+
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vnc_music/components/navigation.dart';
-import 'package:vnc_music/constants.dart';
 import 'package:vnc_music/models/conjunto.model.dart';
+import 'package:vnc_music/pages/conjuntos/conjunto_details.dart';
+import 'package:vnc_music/services/services.dart';
 
 class ConjuntoList extends StatefulWidget {
   const ConjuntoList({
@@ -15,22 +20,19 @@ class ConjuntoList extends StatefulWidget {
 class _ConjuntoList extends State<ConjuntoList> {
   List<Conjunto> conjuntos = [];
   List<Widget> conjuntosWidget = [];
+  RefreshController refreshController = RefreshController(initialRefresh: true);
+  @override
+  initState() {
+    super.initState();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    conjuntos = [];
-    conjuntosWidget = [];
-    conjuntos.add(Conjunto(id: 1, nome: 'Crianças'));
-    conjuntos.add(Conjunto(id: 2, nome: 'Conjunto Alpha'));
-    conjuntos.add(Conjunto(id: 3, nome: 'Conjunto Shekinah'));
-    conjuntos.add(Conjunto(id: 4, nome: 'Círculo de Orações'));
-    conjuntos.add(Conjunto(id: 5, nome: 'Jedutum'));
-    conjuntos.add(Conjunto(id: 6, nome: 'Orquestra'));
-
-    for (Conjunto conjunto in conjuntos) {
-      conjuntosWidget.add(buildMenuItem(context: context, conjunto: conjunto));
-    }
-
     return Scaffold(
       drawer: const NavigationBarWidget(),
       appBar: AppBar(
@@ -39,34 +41,94 @@ class _ConjuntoList extends State<ConjuntoList> {
         ),
         // backgroundColor: primaryColor,
       ),
-      body: ListView(
-        children: conjuntosWidget,
+      body: SmartRefresher(
+        controller: refreshController,
+        enablePullDown: true,
+        enablePullUp: true,
+        onTwoLevel: (isOpen) {
+          print(isOpen);
+        },
+        onRefresh: refresh,
+        onLoading: loading,
+        child: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                child: ListView(
+                  physics: const BouncingScrollPhysics(),
+                  children: conjuntosWidget,
+                ),
+              ),
+            ),
+          ],
+        ),
+        // Column(
+        //   children: [
+        //     Expanded(
+        //       child: Padding(
+        //         padding:
+        //             const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+        //         child: ListView(
+        //           children: conjuntosWidget,
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ),
     );
   }
 
-  Widget buildMenuItem({
+  refresh() async {
+    print('refresh');
+    await getList();
+    refreshController.refreshCompleted();
+  }
+
+  loading() async {
+    print('loading');
+    await getList();
+    refreshController.loadComplete();
+  }
+
+  Future getList() async {
+    print('getList');
+    var c = await conjuntoService.getList();
+    setState(() {
+      conjuntos = c;
+      conjuntosWidget = [];
+      for (Conjunto conjunto in conjuntos) {
+        conjuntosWidget.add(buildItem(context: context, conjunto: conjunto));
+      }
+    });
+  }
+
+  setList() {
+    List<Widget> widgets = [];
+    for (Conjunto conjunto in conjuntos) {
+      widgets.add(buildItem(context: context, conjunto: conjunto));
+    }
+
+    setState(() {
+      conjuntos = conjuntos;
+      conjuntosWidget = widgets;
+    });
+  }
+
+  Widget buildItem({
     required BuildContext context,
     required Conjunto conjunto,
   }) {
     return ListTile(
-      leading: const Icon(
-        Icons.list,
-        color: Colors.black,
-        size: 16,
-      ),
-      minVerticalPadding: 0,
-      style: ListTileStyle.drawer,
-      minLeadingWidth: 5,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 0),
-      title: Text(
-        conjunto.nome,
-        style: const TextStyle(
-          color: Colors.black,
-          fontSize: 14,
-          overflow: TextOverflow.visible,
-        ),
-      ),
+      title: Text(conjunto.nome),
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ConjuntoDetails(conjunto: conjunto)));
+      },
     );
   }
 }

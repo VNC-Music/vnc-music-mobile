@@ -39,11 +39,9 @@ class _Historico extends State<Historico> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            child: Column(
-                              children: const [Text('Crianças')],
-                            ),
-                          )
+                          Column(
+                            children: const [Text('Crianças')],
+                          ),
                         ],
                       ),
                     ),

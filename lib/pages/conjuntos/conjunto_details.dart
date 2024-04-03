@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vnc_music/components/navigation.dart';
-import 'package:vnc_music/constants.dart';
 import 'package:vnc_music/models/conjunto.model.dart';
+import 'package:expandable/expandable.dart';
 
 class ConjuntoDetails extends StatefulWidget {
   final Conjunto conjunto;
@@ -27,17 +27,40 @@ class _ConjuntoDetails extends State<ConjuntoDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const NavigationBarWidget(),
-      appBar: AppBar(
-        title: Text(
-          conjunto.nome,
-          style: const TextStyle(
-            fontSize: 14,
-          ),
-        ),
-        // backgroundColor: primaryColor,
+      body: SingleChildScrollView(
+        child: Text(conjunto.nome),
       ),
-      body: Container(),
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(conjunto.nome),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InkWell(
+                  onTap: () async {},
+                  borderRadius: BorderRadius.circular(50),
+                  highlightColor: Colors.white12,
+                  focusColor: Colors.white12,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
     );
   }
 }
